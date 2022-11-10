@@ -2,25 +2,14 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-
-
-
-
-
-
-
-
-
+/* Pthread tutorial */
 
 
 
 int thread_count;
 
 
-
-
 void* Hello(void* thread_rank);
-
 
 int main(int arg_count, char* argv[]){
     long thread;
