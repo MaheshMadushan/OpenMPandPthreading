@@ -31,7 +31,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 CPPFLAGS := $(INC_FLAGS) -MMD -MP -Wall -g
 
 # libraries that is need to compile
-LDFLAGS = -lpthread -lstdc++
+LDFLAGS = -lpthread -lstdc++ -fopenmp
 
 # The final build step.
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
