@@ -7,11 +7,12 @@ void sum(long long * numOfSteps, double * sums);
 int main(int argc, char* argv[])
 {
     struct timeval te; 
-    gettimeofday(&te, NULL); // get current time
-    long long start_time_in_ms = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
+    gettimeofday(&te, NULL); 
+    long long start_time_in_ms = te.tv_sec*1000LL + te.tv_usec/1000; 
 
-    long long numOfSteps;                               
-    int numOfThreads;                                     // specify number of thread you wants to create
+    long long numOfSteps;                                           // specify number of steps in monte carlo PI alogrithm
+    int numOfThreads;                                               // specify number of thread you wants to create
+    
     long long * p_numOfSteps = &numOfSteps;
     double sums[numOfThreads + 1];     
     double PI = 0;       
@@ -28,10 +29,10 @@ int main(int argc, char* argv[])
     printf("OpenMP will use %d cores to map %lld steps of counting PI to %d threads with %d steps of work load per thread.\n",omp_get_max_threads(),numOfSteps,numOfThreads,(int) numOfSteps/numOfThreads);
 
     #pragma omp parallel num_threads(numOfThreads) shared(sums)
-    sum(p_numOfSteps,sums);                                   // Parallel region with specified number of threads 
+    sum(p_numOfSteps,sums);                                         // Parallel region with specified number of threads 
 
-    gettimeofday(&te, NULL); // get current time
-    long long end_time_in_ms = te.tv_sec*1000LL + te.tv_usec/1000; // calculate milliseconds
+    gettimeofday(&te, NULL);                                        
+    long long end_time_in_ms = te.tv_sec*1000LL + te.tv_usec/1000;  
 
     double reduced_sum;
 
@@ -67,7 +68,7 @@ void sum(long long * numOfSteps, double * sums){
 
     printf("thread rank %d thread count %d work load %d starting num %d ending num %d\n", 
                 thread_rank,     // to get thread id
-                thread_count , // to get num of threads
+                thread_count ,   // to get num of threads
                 work_load,
                 starting_num ,
                 ending_num 
@@ -75,7 +76,6 @@ void sum(long long * numOfSteps, double * sums){
 
     for(int i = starting_num; i < ending_num; i++, factor = -factor){
         local_sum += (factor / ((2 * i) + 1));
-        // printf("%f\n", local_sum);
     }
 
     sums[thread_rank] = local_sum;
