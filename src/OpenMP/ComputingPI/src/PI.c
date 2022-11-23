@@ -81,4 +81,4 @@ void sum(long long * numOfSteps, double * sums){
     sums[thread_rank] = local_sum;
 }
 
-// compiling - gcc -g -Wall hello_openmp.c -o hello_openmp -fopenmp
+// compiling - gcc -g -Wall PI.c -o PI -fopenmp
