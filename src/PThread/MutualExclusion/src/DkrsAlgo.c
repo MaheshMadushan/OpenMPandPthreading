@@ -2,29 +2,23 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-
-
-
-
-
-
 #define THREAD_COUNT 2
 #define PROCESS_COUNT 2
 #define PROCESS_A_ID 0
 #define PROCESS_B_ID 1
-#define SIGNAL_ // find name for signals
 
-void* process_A(void* turn, void* flags);
-void* process_B(void* turn, void* flags);
+int turn = PROCESS_A_ID;
+int shared_variable = 0;
+
+void* process_A(void* flags);
+void* process_B(void* flags);
 
 int main(int arg_count, char* argv[]){
-    
+
     int flags[PROCESS_COUNT];
-    int turn = PROCESS_A_ID;
-    
     pthread_t* thread_handles;
 
-    printf("This program demonstrate dekker's algorithm for achieve mutual exclusion on two process with a critical section");
+    printf("This program demonstrate dekker's algorithm for achieve mutual exclusion on two process with a critical section\n");
 
     thread_handles = malloc(THREAD_COUNT * sizeof(pthread_t));
 
@@ -35,18 +29,63 @@ int main(int arg_count, char* argv[]){
         pthread_join(thread_handles[thread], NULL);
     }
 
+    printf("%d\n",shared_variable);
+
     free(thread_handles);
+
     return 0;
 }
 
-void* process_A(void* turn, void* flags){
-    flags[PROCESS_B_ID] = 0;
-    printf("hello from %ld thread out of %d threads\n",_thread_rank,THREAD_COUNT);
+void* process_A(void* flags){
+
+    int * ptr_to_flags = (int*) flags;
+
+    // non critical section
+    ptr_to_flags[PROCESS_B_ID] = 0;
+    while(turn == PROCESS_B_ID){
+        ptr_to_flags[PROCESS_A_ID] = 0;
+        while(ptr_to_flags[PROCESS_A_ID] == 0){
+            
+        }
+    }
+
+    // critical section
+    printf("in As critical section\n");
+    for (size_t i = 0; i < 100; i++)
+    {
+        shared_variable++;
+    }
+    printf("%d\n",shared_variable);
+    
+
+    turn = PROCESS_B_ID;
+    ptr_to_flags[PROCESS_B_ID] = 1;
     return NULL;
 }
 
-void* process_B(void* turn, void* flags){
-    long _thread_rank = (long) thread_rank;
-    printf("hello from %ld thread out of %d threads\n",_thread_rank,THREAD_COUNT);
+void* process_B(void* flags){
+
+    int * ptr_to_flags = (int*) flags;
+
+    // non critical section
+    ptr_to_flags[PROCESS_A_ID] = 0;
+
+    while(turn == PROCESS_A_ID){
+        ptr_to_flags[PROCESS_B_ID] = 0;
+        while(ptr_to_flags[PROCESS_B_ID] == 0){
+            
+        }
+    }
+
+    // critical section
+    printf("in Bs critical section\n");
+    for (size_t i = 0; i < 100; i++)
+    {
+        shared_variable++;
+    }
+    printf("%d\n",shared_variable);
+
+    turn = PROCESS_A_ID;
+    ptr_to_flags[PROCESS_A_ID] = 1;
     return NULL;
 }
